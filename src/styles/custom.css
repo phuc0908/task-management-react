@@ -1,0 +1,355 @@
+/* === Trello-inspired Clean Design === */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #e2e8f0;
+  color: #172b4d;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* === NAVBAR === */
+.top-navbar {
+  background-color: #0052cc;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.top-navbar .app-logo {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-navbar .search-bar {
+  background: rgba(255,255,255,0.25);
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  color: white;
+  font-size: 13px;
+  width: 200px;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.top-navbar .search-bar::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+.top-navbar .search-bar:focus {
+  background: rgba(255,255,255,0.4);
+  width: 260px;
+}
+
+/* === BOARD HEADER === */
+.board-header {
+  padding: 16px 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.board-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #172b4d;
+  margin: 0;
+}
+
+/* === KANBAN LAYOUT === */
+.board-container {
+  display: flex;
+  overflow-x: auto;
+  padding: 12px 20px 20px;
+  gap: 12px;
+  min-height: calc(100vh - 100px);
+  align-items: flex-start;
+}
+
+/* === KANBAN COLUMN === */
+.kanban-column {
+  background-color: #f1f2f4;
+  border-radius: 12px;
+  width: 280px;
+  min-width: 280px;
+  max-height: calc(100vh - 130px);
+  display: flex;
+  flex-direction: column;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px 8px;
+}
+
+.column-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #44546f;
+  margin: 0;
+  flex: 1;
+}
+
+.column-count {
+  background: #091e420f;
+  color: #44546f;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  margin-left: 6px;
+}
+
+/* === TASK CARDS === */
+.cards-container {
+  overflow-y: auto;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.task-card {
+  background: white;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 1px rgba(9, 30, 66, 0.1), 0 0 0 1px rgba(9, 30, 66, 0.08);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 8px rgba(9, 30, 66, 0.15), 0 0 0 1px rgba(9, 30, 66, 0.08);
+  transform: translateY(-1px);
+}
+
+.task-card:active {
+  transform: translateY(0);
+}
+
+.card-title {
+  font-size: 13.5px;
+  color: #172b4d;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 6px;
+}
+
+.card-description {
+  font-size: 12px;
+  color: #626f86;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* === PRIORITY BADGE === */
+.priority-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: none;
+}
+
+.priority-high {
+  background: #ffedeb;
+  color: #ae2a19;
+}
+
+.priority-medium {
+  background: #fff7d6;
+  color: #7f5f01;
+}
+
+.priority-low {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* === DELETE BUTTON === */
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8c9bab;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.btn-delete:hover {
+  color: #ae2a19;
+  background: #ffedeb;
+}
+
+/* === STATUS INDICATOR === */
+.done-card {
+  opacity: 0.75;
+}
+
+.done-card .card-title {
+  text-decoration: line-through;
+  color: #8c9bab;
+}
+
+/* === ADD TASK BUTTON === */
+.btn-add-task {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: calc(100% - 16px);
+  margin: 8px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: #44546f;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.btn-add-task:hover {
+  background: #091e4214;
+  color: #172b4d;
+}
+
+/* === ADD TASK INLINE FORM === */
+.add-task-form {
+  margin: 0 8px 8px;
+}
+
+.add-task-form textarea {
+  width: 100%;
+  border: 2px solid #0052cc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13.5px;
+  font-family: 'Inter', sans-serif;
+  resize: none;
+  outline: none;
+  min-height: 72px;
+  color: #172b4d;
+  background: white;
+  box-shadow: 0 4px 8px rgba(9, 30, 66, 0.15);
+}
+
+.add-task-form .form-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.btn-save-task {
+  background: #0052cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-save-task:hover {
+  background: #0747a6;
+}
+
+.btn-cancel-task {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #626f86;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 20px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.btn-cancel-task:hover {
+  background: #091e4214;
+  color: #172b4d;
+}
+
+/* === ADD COLUMN BUTTON === */
+.btn-add-column {
+  min-width: 280px;
+  width: 280px;
+  height: 44px;
+  background: rgba(255,255,255,0.5);
+  border: none;
+  border-radius: 12px;
+  color: #172b4d;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  transition: background 0.15s;
+}
+
+.btn-add-column:hover {
+  background: rgba(255,255,255,0.7);
+}
+
+/* === SCROLLBAR === */
+.cards-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cards-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cards-container::-webkit-scrollbar-thumb {
+  background: #bdd0e8;
+  border-radius: 4px;
+}
+
+.board-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.board-container::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+  border-radius: 4px;
+}
+
+.board-container::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
