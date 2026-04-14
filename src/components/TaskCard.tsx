@@ -4,33 +4,18 @@ import { Trash2 } from 'lucide-react';
 
 interface TaskCardProps {
   task: Task;
+  listeners?: any;
+  attributes?: any;
 }
 
-export const TaskCard = ({ task }: TaskCardProps) => {
+export const TaskCard = ({ task, listeners, attributes }: TaskCardProps) => {
   const { deleteTask } = useTaskStore();
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('application/json', JSON.stringify({
-      taskId: task.id,
-      fromStatus: task.status,
-    }));
-    setIsDragging(true);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-  };
 
   return (
-    <div
-      className={`task-card ${task.status === 'done' ? 'done-card' : ''} ${isDragging ? 'dragging' : ''}`}
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <p className="card-title">{task.title}</p>
+    <div className={`task-card ${task.status === 'done' ? 'done-card' : ''}`}>
+      <p className="card-title" {...attributes} {...listeners} style={{ cursor: 'grab' }}>
+        {task.title}
+      </p>
       {task.description && (
         <p className="card-description">{task.description}</p>
       )}
@@ -42,10 +27,12 @@ export const TaskCard = ({ task }: TaskCardProps) => {
           className="btn-delete"
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
+            console.log('Delete button clicked for task:', task.id);
             deleteTask(task.id);
           }}
+          style={{ pointerEvents: 'auto' }}
           title="Delete task"
-          draggable={false}
         >
           <Trash2 size={13} />
         </button>
