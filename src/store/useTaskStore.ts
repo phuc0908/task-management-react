@@ -40,32 +40,36 @@ export const useTaskStore = create<TaskState>()(
           status: 'doing',
           priority: 'medium',
           createdAt: Date.now(),
-        }
+        },
       ],
-      addTask: (task) =>
-        set((state) => ({
-          tasks: [
-            ...state.tasks,
-            {
-              ...task,
-              id: Math.random().toString(36).substring(2, 9),
-              createdAt: Date.now(),
-            },
-          ],
-        })),
-      updateTaskStatus: (id, status) =>
+      addTask: (task) => {
+        set((state) => {
+          const newTask = {
+            ...task,
+            id: Math.random().toString(36).substring(2, 9),
+            createdAt: Date.now(),
+          };
+          return {
+            tasks: [...state.tasks, newTask],
+          };
+        });
+      },
+      updateTaskStatus: (id, status) => {
         set((state) => ({
           tasks: state.tasks.map((t) => (t.id === id ? { ...t, status } : t)),
-        })),
-      deleteTask: (id) =>
+        }));
+      },
+      deleteTask: (id) => {
         set((state) => ({
           tasks: state.tasks.filter((t) => t.id !== id),
-        })),
+        }));
+      },
       searchQuery: '',
       setSearchQuery: (query) => set({ searchQuery: query }),
     }),
     {
       name: 'task-storage',
+      version: 1,
     }
   )
 );

@@ -8,9 +8,28 @@ interface TaskCardProps {
 
 export const TaskCard = ({ task }: TaskCardProps) => {
   const { deleteTask } = useTaskStore();
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      taskId: task.id,
+      fromStatus: task.status,
+    }));
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   return (
-    <div className={`task-card ${task.status === 'done' ? 'done-card' : ''}`}>
+    <div
+      className={`task-card ${task.status === 'done' ? 'done-card' : ''} ${isDragging ? 'dragging' : ''}`}
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       <p className="card-title">{task.title}</p>
       {task.description && (
         <p className="card-description">{task.description}</p>
@@ -21,8 +40,12 @@ export const TaskCard = ({ task }: TaskCardProps) => {
         </span>
         <button
           className="btn-delete"
-          onClick={() => deleteTask(task.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteTask(task.id);
+          }}
           title="Delete task"
+          draggable={false}
         >
           <Trash2 size={13} />
         </button>
@@ -45,7 +68,8 @@ export const AddTaskInline = ({ status }: AddTaskProps) => {
     if (open) textareaRef.current?.focus();
   }, [open]);
 
-  const handleSave = () => {
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const trimmed = title.trim();
     if (!trimmed) return;
     addTask({ title: trimmed, description: '', status, priority: 'medium' });
@@ -56,7 +80,12 @@ export const AddTaskInline = ({ status }: AddTaskProps) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSave();
+      const trimmed = title.trim();
+      if (trimmed) {
+        addTask({ title: trimmed, description: '', status, priority: 'medium' });
+        setTitle('');
+        setOpen(false);
+      }
     }
     if (e.key === 'Escape') {
       setTitle('');
@@ -66,26 +95,27 @@ export const AddTaskInline = ({ status }: AddTaskProps) => {
 
   if (!open) {
     return (
-      <button className="btn-add-task" onClick={() => setOpen(true)}>
+      <button className="btn-add-task" onClick={(e) => { e.stopPropagation(); setOpen(true); }}>
         <span style={{ fontSize: 18, lineHeight: 1 }}>+</span> Thêm thẻ
       </button>
     );
   }
 
   return (
-    <div className="add-task-form">
+    <div className="add-task-form" onMouseDown={(e) => e.stopPropagation()}>
       <textarea
         ref={textareaRef}
         placeholder="Nhập tiêu đề cho thẻ này..."
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={handleKeyDown}
+        draggable={false}
       />
       <div className="form-actions">
         <button className="btn-save-task" onClick={handleSave}>
           Thêm thẻ
         </button>
-        <button className="btn-cancel-task" onClick={() => { setTitle(''); setOpen(false); }}>
+        <button className="btn-cancel-task" onClick={(e) => { e.stopPropagation(); setTitle(''); setOpen(false); }}>
           ✕
         </button>
       </div>

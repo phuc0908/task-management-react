@@ -1,5 +1,6 @@
 import { TaskCard, AddTaskInline } from './TaskCard';
 import { useTaskStore, TaskStatus } from '../store/useTaskStore';
+import { useState } from 'react';
 
 const COLUMNS: { title: string; status: TaskStatus }[] = [
   { title: 'Cần làm', status: 'todo' },
@@ -8,7 +9,8 @@ const COLUMNS: { title: string; status: TaskStatus }[] = [
 ];
 
 export const KanbanBoard = () => {
-  const { tasks, searchQuery } = useTaskStore();
+  const { tasks, searchQuery, updateTaskStatus } = useTaskStore();
+  const [dragOverStatus, setDragOverStatus] = useState<TaskStatus | null>(null);
 
   const filteredTasks = tasks.filter(
     (t) =>
@@ -27,7 +29,32 @@ export const KanbanBoard = () => {
               <span className="column-count">{colTasks.length}</span>
             </div>
 
-            <div className="cards-container">
+            <div
+              className={`cards-container ${dragOverStatus === col.status ? 'drag-over' : ''}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.dataTransfer.dropEffect = 'move';
+                setDragOverStatus(col.status);
+              }}
+              onDragLeave={() => {
+                setDragOverStatus(null);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDragOverStatus(null);
+                
+                try {
+                  const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                  if (data.taskId) {
+                    updateTaskStatus(data.taskId, col.status);
+                  }
+                } catch (error) {
+                  console.error('Invalid drag data:', error);
+                }
+              }}
+            >
               {colTasks.map((task) => (
                 <TaskCard key={task.id} task={task} />
               ))}
